@@ -28,50 +28,41 @@ class AboutAcadmyController extends Controller
 
     public function store(Request $request)
     {
-        dd(request('description'));
+        // dd(count(request('media'));
         $this->validate($request , [
             'title' => 'required|unique:about_acadmies,title',
             'description' => 'required',
         ]);
 
-        // if(request('image') == ""){
-        //     $name = null;
-        //     for($i = 0; $i < count(request('media')); $i++){
-        //         $data = [
-        //             'title' => request('title'),
-        //             'group_id' => AboutAcadmy::orderBy('id', 'desc')->select('id')->first()+1,
-        //             'description' => request('description'),
-        //             'media' => $name,
-        //             'status' => request('status')
-        //         ];
-        //     }
-        // }else{
-        //     $file = request('media');
-        //     $name = time() . '.' .$file->getClientOriginalExtension();
-        //     $path = public_path('back/images/about_acadmy');
-        //     $file->move($path , $name);
+        if(request('media') == null){
+            $data = [
+                'title' => request('title'),
+                'group_id' => AboutAcadmy::orderBy('id', 'desc')->select('id')->first()+1,
+                'description' => request('description'),
+                'media' => null,
+                'status' => request('status')
+            ];
+        }else{
+            $data = [];
+            for($i = 0; $i < count(request('media')); $i++){
+                // $file = request('media');
+                // $name = time() . '.' .$file->getClientOriginalExtension();
+                // $path = public_path('back/images/about_acadmy');
+                // $file->move($path , $name);
 
-        //     $data = [];
-        //     for($i = 0; $i < count(request('media')); $i++){
-        //         $data[] = [
-        //             'title' => request('title'),
-        //             'group_id' => AboutAcadmy::orderBy('id', 'desc')->select('id')->first()+1,
-        //             'description' => request('description'),
-        //             'media' => $name[$i],
-        //             'status' => request('status')
-        //         ];
-        //     }
-        // }
-
-        $data = [
-            'title' => request('title'),
-            'group_id' => AboutAcadmy::orderBy('id', 'desc')->select('id')->first()+1,
-            'description' => request('description'),
-            // 'media' => $name[$i],
-            'status' => request('status')
-        ];
+                
+                // $data[] = [
+                //     'title' => request('title'),
+                //     'group_id' => AboutAcadmy::orderBy('id', 'desc')->select('id')->first()+1,
+                //     'description' => request('description'),
+                //     'media' => $name[$i],
+                //     'status' => request('status')
+                // ];
+            }
+        }
 
         AboutAcadmy::create($data);
+        return redirect()->to('admin/about_acadmy');
     }
 
     public function show($id)
@@ -211,7 +202,7 @@ class AboutAcadmyController extends Controller
             }
         })
         ->addColumn('action', function($res){
-            $buttons = '<a class="btn btn-outline-success btn-sm edit bt_modal" title="Edit" act="'.url('admin/about_acadmy/edit/'.$res->name).'"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
+            $buttons = '<a href="'.url('admin/about_acadmy/edit/'.$res->id).'" class="btn btn-outline-success btn-sm" title="Edit">
                 <i class="fas fa-pencil-alt"></i>
             </a>';
             
