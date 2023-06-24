@@ -98,12 +98,6 @@
                                         </li>
                                     </div>
                                 </div>
-
-                                {{-- <button type="button" class="btn btn-primary btn-rounded waves-effect waves-light mb-2 me-2 bt_modal" act="{{ url('admin/about_acadmy/create') }}" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
-                                    <i class="mdi mdi-plus me-1"></i>
-                                    @lang('app.add')
-                                </button> --}}
-
                                 <a href="{{ url('admin/about_acadmy/create') }}" type="button" class="btn btn-primary btn-rounded">
                                     <i class="mdi mdi-plus me-1"></i>
                                     @lang('app.add')

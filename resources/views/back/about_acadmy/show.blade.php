@@ -1,88 +1,90 @@
-<div>
-    <div class="row">
-        <div class="col-md-4" id="image">
-            <div class="panel-body">
-                <a class="spotlight" href="{{ url('back/images/about_acadmy/'.$find['image']) }}">
-                    <img src="{{ url('back/images/about_acadmy/'.$find['image']) }}" style="width:200px;height: 230px;margin:100px auto;border-radius:2px;">
-                </a>
+@extends('back.layouts.app')
+
+@section('title')
+    عرض عن الأكاديمية 
+    ( {{ $find['title'] }} )
+@endsection
+
+@section('header')
+    {{-- spotlight --}}
+    <link href="{{ url('back') }}/assets/css/spotlight.min.css" rel="stylesheet" type="text/css" />
+@endsection
+
+@section('footer')
+    <!-- spotlight -->
+	<script src="{{ url('back') }}/assets/js/spotlight.bundle.js"></script>
+	<script src="{{ url('back') }}/assets/js/spotlight.min.js"></script>t>
+@endsection
+
+@section('content')
+
+    <div class="main-content">
+
+        <div class="page-content">
+            <div class="container-fluid">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0 font-size-18">
+                                عرض عن الأكاديمية 
+                                <span style="color: red;">( {{ $find['title'] }} )</span>    
+                            </h4>
+                            
+                            <div>
+                                <a href="{{ url('admin/about_acadmy/edit/'.$find['id']) }}" type="button" class="btn btn-primary btn-rounded">
+                                    <i class="mdi mdi-pencil me-1"></i>
+                                    @lang('app.edit')
+                                </a>
+    
+                                <a href="{{ url('admin/about_acadmy/create') }}" type="button" class="btn btn-success btn-rounded">
+                                    <i class="mdi mdi-plus me-1"></i>
+                                    @lang('app.add')
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                
+                <div>
+                    <div class="row">
+                        <div class="col-md-4" id="image">
+                            <div class="panel-body">
+                                @foreach ($images_explode as $img)    
+                                    <a class="spotlight" href="{{ url('back/images/about_acadmy/'.$img) }}">
+                                        <img src="{{ url('back/images/about_acadmy/'.$img) }}" style="width:140px;height: 140px;margin:10px auto;border-radius:50%;">
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-8" id="content">
+                            <div class="">
+                                <div id="id_pr">
+                                    <strong>{{ trans('app.title') }}</strong>
+                                    : <span style="color:#042a4a;">{{ $find->title }}</span>
+                                </div>
+                                <hr>
+                                <div id="description">
+                                    <strong>{{ trans('app.description') }}</strong>
+                                    <br>
+                                    : <span style="color:#042a4a;">{!! $find->description !!}</span>
+                                </div>
+                                <hr>
+                                <div id="id_pr">
+                                    <strong>{{ trans('app.status') }}</strong>
+                                    : <span style="color:#042a4a;">{{ $find->status == 1 ? "مفعل" : "غير مفعل" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-8" id="content">
-            <div class="col-md-6">
-                <div id="id_pr">
-                    <strong>{{ trans('app.id') }}</strong>
-                    : <span style="color:#042a4a;">{{ $find->admin_name['id'] }}</span>
-                </div>
-                <hr>
-                <div id="name_pr">
-                    <strong>{{ trans('app.name') }}</strong>
-                    : <span style="color:#042a4a;">{{ $find->admin_name['name'] }}</span>
-                </div>
-                <hr>
-                <div id="email_pr">
-                    <strong>{{ trans('app.email') }}</strong>
-                    : <span style="color:#042a4a;">{{ $find->admin_name['email'] }}</span>
-                </div>
-                <hr>
-                <div id="mobile_pr">
-                    <strong>{{ trans('app.phone') }}</strong>
-                    : <span style="color:#042a4a;">{{ $find->admin_name['user_phone'] }}</span>
-                </div>
-                <hr>
-                <div id="national_id_pr">
-                    <strong>{{ trans('app.birth_date') }}</strong>
-                    : <span style="color:#042a4a;">{{ $find['birth_date'] }}</span>
-                </div>
-                <hr>
-                <div id="nat_id">
-                    <strong>{{ trans('app.nat_id') }}</strong>
-                    : <span style="color:#042a4a;">{{ $find['nat_id'] }}</span>
-                </div>
-                <hr>
-            </div>
-            <div class="col-md-6">
-                <div id="department_pr">
-                    <strong>{{ trans('app.role') }}</strong>
-                    : <span style="color:#042a4a;">{{ $find->admin_name['role'] }}</span>
-                </div>
-                <hr>
-                <div id="gender_pr">
-                    <strong>{{ trans('app.gender') }}</strong>
-                    : <span style="color:#042a4a;">{{ $find['gender'] == 1 ? trans('app.male') : trans('app.female') }}</span>
-                </div>
-                <hr>
-                <div id="status_pr">
-                    <strong>{{ trans('app.status') }}</strong>
-                    : <span style="color:#042a4a;">{{ $find['status'] == 1 ? trans('app.active') : trans('app.not_active') }}</span>
-                </div>
-                <hr>
-                <div id="address_pr">
-                    <strong>{{ trans('app.address') }}</strong>
-                    : <span style="color:#042a4a;">{{ $find['address'] }}</span>
-                </div>
-                <hr>
-                <div id="last_login_time">
-                    <strong>{{ trans('app.last_login_time') }}</strong>
-                    : <span style="color:#042a4a;">{{ $find->admin_name['last_login_time'] }}</span>
-                </div>
-                <hr>
-                <div id="note">
-                    <strong>{{ trans('app.notes') }}</strong>
-                    : <span style="color:#042a4a;">{{ $find['note'] }}</span>
-                </div>
-                <hr>
-            </div>
-        </div>
+        {{-- Include Footer --}}
+        @include('back.layouts.footer')
     </div>
-
-    {{-- <button class="btn btn-primary print_button" style="display: block;margin: 10px auto;">
-        طباعه
-        <i class="fa fa-print" style="font-size: 18px;margin: 0px 5px;"></i>
-    </button> --}}
-</div>
-
-<script>
-    $("#offcanvasWithBothOptions .offcanvas-title").text("@lang('app.show')").css("color", "#FFF");
-    $("#offcanvasWithBothOptions .offcanvas-header").css("background", "rgb(119 210 215)");
-</script>
+@endsection

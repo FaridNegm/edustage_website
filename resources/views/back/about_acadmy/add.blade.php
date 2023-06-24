@@ -5,28 +5,9 @@
 @endsection
 
 @section('header')
-    <style>
-        @media (min-width: 768px) { /* Tablet */
-            .offcanvas {
-                width: 90%;
-            }
-        }
-        @media (min-width: 992px){ /* Large Screen */
-            .offcanvas {
-                width: 40%;
-            }
-        }
-        .card-title span{
-            float: left;
-        }
-        .small_unit_checkbox{
-            margin: 0px 10px;
-            position: relative;
-            top: 4px;
-            width: 15px;
-            height: 15px;
-        }
-    </style>
+    {{-- file upload --}}
+    <link href="{{ url('back') }}/assets/file-upload-with-preview.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ url('back') }}/assets/libs/magnific-popup/magnific-popup.css" rel="stylesheet" type="text/css" />
 
     <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
     <script type="text/javascript">
@@ -38,26 +19,10 @@
 @endsection
 
 @section('footer')
-    <script src="{{ url('back') }}/assets/libs/dropzone/min/dropzone.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $("table").attr('class', 'table table-responsive table-bordered table-striped table-primary text-center');
-        });
-    </script>
-    <script>
-        $(document).ready(function(){
-            $('.select2').select2();
-        });
-    </script>
-
-
-    <script>
-        $(document).ready(function(){
-            $('.select2').select2({
-                dropdownParent: $('#offcanvasWithBothOptions'),
-            });      
-        });
-    </script>
+    <!-- file-upload -->
+    <script src="{{ url('back') }}/assets/file-upload-with-preview.min.js"></script>
+    <script src="{{ url('back') }}/assets/libs/magnific-popup/jquery.magnific-popup.min.js"></script>
+    <script> $(document).ready(function(){ var firstUpload = new FileUploadWithPreview('file_upload'); }); </script>
 
     @include('back.about_acadmy.delete')
 @endsection
@@ -135,14 +100,26 @@
                                                 </a>
                                             </label>
                                             <label class="custom-file-container__custom-file" >
-                                                <input type="file" class="custom-file-container__custom-file__custom-file-input" name="media" multiple>
+                                                <input type="file" class="custom-file-container__custom-file__custom-file-input" name="media[]" multiple>
                                                 <input type="hidden" name="media_hidden" />
                                                 <span class="custom-file-container__custom-file__custom-file-control text-center"></span>
                                             </label>
                                             <div class="custom-file-container__image-preview"></div>
                                         </div> --}}
 
-                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" name="media" multiple>
+                                        <div class="custom-file-container" data-upload-id="file_upload">
+                                            <label style="color: #555;">{{ trans('app.image') }}
+                                                <a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image">
+                                                    <i class="fa fa-trash-alt" style="color: rgb(221, 7, 7);font-size: 15px;position: relative;top: 3px;margin: 0px 15px 10px;"></i>
+                                                </a>
+                                            </label>
+                                            <label class="custom-file-container__custom-file" >
+                                                <input type="file" class="custom-file-container__custom-file__custom-file-input" name="media[]" multiple>
+                                                <input type="hidden" name="image_hidden" />
+                                                <span class="custom-file-container__custom-file__custom-file-control text-center"></span>
+                                            </label>
+                                            <div class="custom-file-container__image-preview"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

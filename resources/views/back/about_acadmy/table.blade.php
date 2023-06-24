@@ -3,7 +3,6 @@
         <tr>
             <th>@lang('app.title')</th>
             <th>@lang('app.description')</th>
-            <th>@lang('app.media')</th>
             <th>@lang('app.status')</th>
             <th>@lang('app.action')</th>
         </tr>

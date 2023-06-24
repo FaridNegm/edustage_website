@@ -34,41 +34,42 @@ class AboutAcadmyController extends Controller
             'description' => 'required',
         ]);
 
+        $group_id = AboutAcadmy::orderBy('id', 'desc')->select('id')->first();
+
         if(request('media') == null){
             $data = [
                 'title' => request('title'),
-                'group_id' => AboutAcadmy::orderBy('id', 'desc')->select('id')->first()+1,
+                'group_id' => $group_id['id']+1,
                 'description' => request('description'),
                 'media' => null,
                 'status' => request('status')
             ];
         }else{
-            $data = [];
-            for($i = 0; $i < count(request('media')); $i++){
-                // $file = request('media');
-                // $name = time() . '.' .$file->getClientOriginalExtension();
-                // $path = public_path('back/images/about_acadmy');
-                // $file->move($path , $name);
+            $images = [];
+            foreach(request('media') as $file){
+                $name = rand(1,1000) . '.' .$file->getClientOriginalName();
+                $path = public_path('back/images/about_acadmy');
+                $file->move($path , $name);
+                $images[] = $name;
 
-                
-                // $data[] = [
-                //     'title' => request('title'),
-                //     'group_id' => AboutAcadmy::orderBy('id', 'desc')->select('id')->first()+1,
-                //     'description' => request('description'),
-                //     'media' => $name[$i],
-                //     'status' => request('status')
-                // ];
             }
+
+            AboutAcadmy::insert([
+                'title' => request('title'),
+                'description' => request('description'),
+                'media' => implode('|', $images),
+                'status' => request('status')
+            ]);
         }
 
-        AboutAcadmy::create($data);
         return redirect()->to('admin/about_acadmy');
     }
 
     public function show($id)
     {
-        $find = AboutAcadmy::where('name' , $id)->first();
-        return view('back/about_acadmy/show', compact('find'));
+        $find = AboutAcadmy::where('id' , $id)->first();
+        $images_explode = explode('|', $find['media']);
+        return view('back/about_acadmy/show', compact('find', 'images_explode'));
     }
 
     public function edit($id)
@@ -137,14 +138,6 @@ class AboutAcadmyController extends Controller
     {
         $all = AboutAcadmy::all();
         return DataTables::of($all)
-        ->addColumn('image', function($res){
-            $image ='
-                <a class="spotlight" href="'.url('back/images/about_acadmy/'.$res->image).'">
-                    <img src="'.url('back/images/about_acadmy/'.$res->image).'" style="width: 50px;height: 50px;border-radius: 50%;margin: 10px auto;display: block;">
-                </a>
-            ';
-            return $image;
-        })
         ->addColumn('title', function($res){
             return "
                 <p style='color:#24ABF2;margin: 0px 5px;font-weight: bold;font-size: 15px;'>"
@@ -152,47 +145,12 @@ class AboutAcadmyController extends Controller
                 "</p>
             ";
         })
-        ->addColumn('contact', function($res){
+        ->addColumn('description', function($res){
             return "
-                <div style='padding:2px;'>
-                    <i class='fa fa-phone'></i>
-                    <span style='margin: 0px 5px;'>"
-                        .$res->admin_name['user_phone'].
-                    "</span>
-                </div>
-
-                <div style='padding:2px;'>
-                    <i class='fa fa-envelope'></i>
-                    <span style='margin: 0px 5px;'>"
-                        .$res->admin_name['email'].
-                    "</span>
-                </div>
+                <p style='margin: 0px 5px;font-weight: bold;font-size: 15px;'>"
+                    .implode(' ', array_slice(explode(' ', $res->description), 0, 40)).
+                "</p>
             ";
-        })
-        ->addColumn('last_login_time', function($res){
-            if($res->admin_name['last_login_time'] == null){
-                return "
-                    <div style='padding:2px;'>
-                        <i class='fas fa-clock'></i>
-                    </div>
-                ";
-            }else{
-                return "
-                    <div style='padding:2px;'>
-                        <i class='fas fa-clock'></i>
-                        <span style='margin: 0px 5px;'>"
-                            .Carbon::parse($res->admin_name['last_login_time'])->format('d-m-Y').
-                        "</span>
-                        <span style='margin: 0px 5px;color: red;'>"
-                            .Carbon::parse($res->admin_name['last_login_time'])->format('h:i:s a').
-                        "</span>
-                    </div>
-                ";
-            }
-        })
-        ->addColumn('gender', function($res){
-            $gender = $res->gender == 1 ? '<i class="fa fa-male" style="font-size:18px;color: #54ca68;"></i>'  : '<i class="fa fa-female" style="font-size:18px;color: #f97a80;"></i>';
-            return $gender;
         })
         ->addColumn('status', function($res){
             if($res->status == 1){
@@ -202,25 +160,21 @@ class AboutAcadmyController extends Controller
             }
         })
         ->addColumn('action', function($res){
-            $buttons = '<a href="'.url('admin/about_acadmy/edit/'.$res->id).'" class="btn btn-outline-success btn-sm" title="Edit">
+            $buttons = '<a href="'.url('admin/about_acadmy/edit/'.$res->id).'" class="btn btn-outline-success btn-sm">
                 <i class="fas fa-pencil-alt"></i>
             </a>';
             
-            $buttons .= '<a class="btn btn-outline-info btn-sm show bt_modal" act="'.url('admin/about_acadmy/show/'.$res->name).'"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
+            $buttons .= '<a class="btn btn-outline-info btn-sm" href="'.url('admin/about_acadmy/show/'.$res->id).'" style="margin: 0px 5px 0px 0px;">
                 <i class="fas fa-eye"></i>
             </a>';
 
-            $buttons .= '<a class="btn btn-outline-danger btn-sm delete" loop_id="'.$res->name.'">
+            $buttons .= '<a class="btn btn-outline-danger btn-sm delete" loop_id="'.$res->id.'">
                 <i class="fas fa-trash-alt"></i>
             </a>';
-            
-            $buttons .= '<a class="btn btn-outline-dark btn-sm bt_modal" act="'.url('admin/about_acadmy/change_password/'.$res->name).'"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
-                <i class="fas fa-key"></i>
-            </a>';
-            
+                        
             return $buttons;
         })
-        ->rawColumns(['image', 'user', 'contact', 'last_login_time', 'branche', 'gender', 'status', 'action'])
+        ->rawColumns(['title', 'description', 'status', 'action'])
         ->make(true);
     }
 }
